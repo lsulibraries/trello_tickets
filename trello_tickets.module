@@ -14,15 +14,15 @@
 function trello_tickets_menu() {
   $items = array();
 
-  $items['trello/example'] = array(
+  $items['issues'] = array(
     'title' => 'Submit support ticket',
     'page callback' => 'drupal_get_form',
     'page arguments' => array('trello_tickets_form'),
     'access arguments' => array('access trello'),
     'type' => MENU_NORMAL_ITEM,
   );
-  $items['admin/config/services/trello/example'] = array(
-    'title' => 'Trello Example Configuration',
+  $items['admin/config/services/issues'] = array(
+    'title' => 'Trello Tickets Configuration',
     'description' => 'Configure your Support Queue list.',
     'page callback' => 'drupal_get_form',
     'page arguments' => array('trello_tickets_config_form'),
