@@ -1,0 +1,6 @@
+name = Trello Example Module
+description = Module to demonstrate some simple usage of the Trello api
+core = 7.x
+package = Trello
+dependencies[] = trello
+dependencies[] = block

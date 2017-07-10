@@ -1,0 +1,17 @@
+<?php
+
+/**
+ * @file
+ * Handle Trello example module install and uninstall.
+ */
+
+/**
+ * Implements hook_uninstall().
+ */
+function trello_tickets_uninstall() {
+  // Unset the variables used in the module.
+  $variables = array('trello_tickets_queue');
+  foreach ($variables as $v) {
+    variable_del($v);
+  }
+}
