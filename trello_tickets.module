@@ -2,11 +2,23 @@
 
 /**
  * @file
- * Example Trello Module.
+ * Tickets module altered slightly from Example Trello Module.
  *
  * Show the use of the API showing a list of boards in a block, and a form
  * which posts to a list on a board.
  */
+
+/**
+ * Implements hook_permission().
+ */
+function trello_tickets_permission() {
+  return array(
+    'create support ticket' => array(
+      'title' => t('Create support ticket.'),
+      'description' => t('Create a support ticket and submit it to the site admin for follow-up.'),
+    ),
+  );
+}
 
 /**
  * Implements hook_menu().
@@ -15,10 +27,10 @@ function trello_tickets_menu() {
   $items = array();
 
   $items['issues'] = array(
-    'title' => 'Submit support ticket',
+    'title' => 'Create support ticket',
     'page callback' => 'drupal_get_form',
     'page arguments' => array('trello_tickets_form'),
-    'access arguments' => array('access trello'),
+    'access arguments' => array('create support ticket'),
     'type' => MENU_NORMAL_ITEM,
   );
   $items['admin/config/services/issues'] = array(
@@ -31,40 +43,6 @@ function trello_tickets_menu() {
   );
 
   return $items;
-}
-
-/**
- * Implements hook_block_info().
- */
-function trello_tickets_block_info() {
-  $blocks = array();
-  $blocks['trelloExample'] = array(
-    'info' => t('List Trello Boards'),
-    'status' => TRUE,
-    'cache' => DRUPAL_CACHE_GLOBAL,
-  );
-  return $blocks;
-}
-
-/**
- * Implements hook_block_view().
- */
-function trello_tickets_block_view($delta = '') {
-  $block = array();
-  switch ($delta) {
-    case 'trelloExample':
-      $block['subject'] = t('Trello Boards');
-      $t = trello_api(array('members' => 'me', 'boards'));
-      $block['content'] = '<ul>';
-      foreach ($t['data'] as $board) {
-        if ($board->pinned) {
-          $block['content'] .= '<li>' . l($board->name, $board->url) . '</li>';
-        }
-      }
-      $block['content'] .= '</ul>';
-      break;
-  }
-  return $block;
 }
 
 /**
@@ -168,10 +146,6 @@ function trello_tickets_form($form, &$form_state) {
     '#value' => t('Submit Request'),
   );
 
-  $form['contact_email'] = array(
-    '#type' => 'textfield',
-    '#title' => 'Contact Email address',
-  );
   $form['referer'] = array(
     '#type' => 'hidden',
     '#default_value' => $_SERVER['HTTP_REFERER'],
@@ -202,7 +176,6 @@ function trello_tickets_form_submit(&$form, &$form_state) {
   $referer = isset($form_state['values']['referer']) ? $form_state['values']['referer'] : '?';
   $agent   = isset($form_state['values']['user_agent']) ? $form_state['values']['user_agent'] : '?';
   $user    = isset($form_state['values']['username']) ? $form_state['values']['username'] : '?';
-  $email   = isset($form_state['values']['contact_email']) ? $form_state['values']['contact_email'] : 'Not given.';
   $args['desc'] .= <<<INFO
 
       
@@ -211,7 +184,6 @@ function trello_tickets_form_submit(&$form, &$form_state) {
 - Referer:    $referer
 - User Agent: $agent
 - Username:   $user
-- Email:      $email
 INFO;
 
   $board = trello_api(array('lists' => $queue, 'board'), 'GET');
@@ -220,7 +192,7 @@ INFO;
   foreach($members['data'] as $member) {
     $notify[] = $member->id;
   }
-  //$args[] = array('idMembers' => $notify);
+  $args[] = array('idMembers' => $notify);
   // need a due date formatted as 2017-06-15T04:00:00.000Z
   $due = gmstrftime("%his link to track the progress: A %d-%b-%y %T %Z", time() + 86400);
   $args['due'] = $due;
@@ -234,7 +206,7 @@ INFO;
 
   $cards = trello_api(array('lists' => $queue, 'cards'));
 
-  drupal_set_message(t('Thanks! Your post was submitted. Use this link to track the progress: <a href="@c">@c</a>',
+  drupal_set_message(t('Thanks! Your ticket was submitted. Use this link to track the progress: <a href="@c">@c</a>',
       array('@c' => url($trello->result['data'][0]->shortUrl))
     ));
 }
