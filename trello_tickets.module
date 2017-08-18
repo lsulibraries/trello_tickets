@@ -8,6 +8,8 @@
  * which posts to a list on a board.
  */
 
+$default_link_text = 'Submit an issue';
+
 /**
  * Implements hook_permission().
  */
@@ -88,7 +90,7 @@ function trello_tickets_config_form() {
   $form['link_text'] = array(
     '#type' => 'textfield',
     '#title' => t('Link text'),
-    '#default_value' => variable_get('trello_tickets_link_text', 'Submit an issue'),
+    '#default_value' => variable_get('trello_tickets_link_text', $default_link_text),
     '#required' => TRUE,
   );
   $form['notify'] = array(
@@ -231,7 +233,7 @@ INFO;
 
 function trello_tickets_block_view_alter(&$data, $block) {
   if ($block->region == 'header_second' && $block->module == 'block') {
-    $text = variable_get('trello_tickets_link_text');
+    $text = variable_get('trello_tickets_link_text', $default_link_text);
     $data['content'] .= sprintf('<div class="support-ticket-link"><a href="/issues">%s</a>', $text);
   }
 }
