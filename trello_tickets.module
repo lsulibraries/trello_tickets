@@ -8,7 +8,7 @@
  * which posts to a list on a board.
  */
 
-define('TRELLO_TICKETS_DEFAULT_LINK_TEXT', 'Submit an issue');
+define('TRELLO_TICKETS_DEFAULT_LINK_TEXT', 'Request Support');
 
 /**
  * Implements hook_permission().
@@ -234,6 +234,6 @@ INFO;
 function trello_tickets_block_view_alter(&$data, $block) {
   if ($block->region == 'header_second' && $block->module == 'block') {
     $text = variable_get('trello_tickets_link_text', TRELLO_TICKETS_DEFAULT_LINK_TEXT);
-    $data['content'] .= sprintf('<div class="support-ticket-link"><a href="/issues">%s</a></div>', $text);
+    $data['content'] .= sprintf('<div class="support-ticket-link"><a href="https://askus.lib.lsu.edu/form?queue_id=5569">%s</a></div>', $text);
   }
 }
