@@ -233,7 +233,6 @@ INFO;
 
 function trello_tickets_block_view_alter(&$data, $block) {
   if ($block->region == 'header_second' && $block->module == 'block') {
-    $text = 'Submit Support Request';
-    $data['content'] .= sprintf('<div class="support-ticket-link"><a href="https://askus.lib.lsu.edu/form?queue_id=5569">%s</a></div>', $text);
+    $data['content'] .= sprintf('<div class="support-ticket-link"><a href="https://askus.lib.lsu.edu/form?queue_id=5569">%s</a></div>', 'Submit Support Request');
   }
 }
